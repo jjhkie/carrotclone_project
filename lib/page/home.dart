@@ -1,3 +1,4 @@
+import 'package:carrotclone_project/page/detail.dart';
 import 'package:carrotclone_project/repository/contents_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,7 +6,6 @@ import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
-
   @override
   State<Home> createState() => _HomeState();
 }
@@ -25,7 +25,6 @@ class _HomeState extends State<Home> {
     currentLocation = "ara";
 
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -83,65 +82,76 @@ class _HomeState extends State<Home> {
     return ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         itemBuilder: (context, index) {
-          return Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    child: Image.asset(datas![index]['image']!,
-                        width: 100, height: 100),
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: 100,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            datas[index]['title']!,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            datas[index]['location']!,
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black.withOpacity(0.3)),
-                          ),
-                          SizedBox(height: 5),
-                          Text(calcStringToWon(datas[index]['price']!),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500)),
-                          Expanded(
-                            child: Container(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .end,
-                                  crossAxisAlignment: CrossAxisAlignment
-                                      .end,
-                                  children: [
-                                    SvgPicture.asset(
-                                        "assets/svg/heart_off.svg",
-                                        width: 13, height: 13),
-                                    SizedBox(width: 5),
-                                    Text(datas[index]['likes']!)
-                                  ]),
-                            ),
-                          ),
-                        ],
+          return GestureDetector(
+            onTap: (){
+              Navigator.push(context,MaterialPageRoute(builder:(BuildContext context){
+                return DetailContentView(data: datas![index]);
+              }));
+              print(data![index]['title']);
+            },
+            child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      child: Hero(
+                        tag: datas![index]['cid'],
+                        child: Image.asset(datas[index]['image']!,
+                            width: 100, height: 100),
                       ),
                     ),
-                  )
-                ],
-              ));
+                    Expanded(
+                      child: Container(
+                        height: 100,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              datas[index]['title']!,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              datas[index]['location']!,
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black.withOpacity(0.3)),
+                            ),
+                            SizedBox(height: 5),
+                            Text(calcStringToWon(datas[index]['price']!),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500)),
+                            Expanded(
+                              child: Container(
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .end,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .end,
+                                    children: [
+                                      SvgPicture.asset(
+                                          "assets/svg/heart_off.svg",
+                                          width: 13, height: 13),
+                                      SizedBox(width: 5),
+                                      Text(datas[index]['likes']!)
+                                    ]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                )),
+          );
         }, //item Widget
         separatorBuilder: (context, index) {
           return Container(
               height: 1, color: Colors.black.withOpacity(0.4));
         }, //item 사이에 있는 구분선
-        itemCount: 10);
+        itemCount: data!.length);
   }
   Widget _bodyWidget() {
     return FutureBuilder(
