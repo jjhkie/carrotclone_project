@@ -56,13 +56,96 @@ class _DetailContentViewState extends State<DetailContentView> {
     );
   }
 
-  Widget _bodyWidget() {
-    return Column(
-      children: [
-        _makeSliderImage(),
-        _sellerSimpleInfo(),
-      ],
+  //라인
+  Widget _line() {
+    return Container(
+      height: 1,
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+      color: Colors.grey.withOpacity(0.3),
     );
+  }
+
+  Widget _contentDetail() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: 20),
+          Text(
+            widget.data["title"],
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          Text(
+            "디지털/가전 - 22시간 전",
+            style: TextStyle(color: Colors.grey, fontSize: 12),
+          ),
+          SizedBox(height: 15),
+          Text(
+            "당근마켓(Daangn Market)은\n 대한민국의 중고 거래, 소상공인 홍보 등 생활정보 소프트웨어이다.\n 중고거래, 지역업체, 질문답변, 부동산, 구인구직 등 지역 내에서 발생하는 생활정보를 검색하고\n 게시자와 실시간으로 채팅할 수 있다.",
+            style: TextStyle(height: 1.5, fontSize: 14),
+          ),
+          SizedBox(height: 15),
+          Text(
+            "채팅 3 - 관심 17 - 조회 295",
+            style: TextStyle(height: 1.5, fontSize: 12),
+          ),
+          SizedBox(height: 15)
+        ],
+      ),
+    );
+  }
+
+  Widget _otherCellContent() {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("판매자님의 판매 상품",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+          Text("모두 보기",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  Widget _bodyWidget() {
+    return CustomScrollView(slivers: [
+      SliverList(
+        delegate: SliverChildListDelegate(
+          [
+            _makeSliderImage(),
+            _sellerSimpleInfo(),
+            _line(),
+            _contentDetail(),
+            _line(),
+            _otherCellContent()
+          ],
+        ),
+      ),
+      SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          sliver: SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
+            delegate: SliverChildListDelegate(List.generate(20, (index) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(height: 120, color: Colors.grey)),
+                  Text("상품 제목", style: TextStyle(fontSize: 14)),
+                  Text("금액",
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                ],
+              );
+            }).toList()),
+          ))
+    ]);
   }
 
   Widget _bottomBarWidget() {
@@ -143,7 +226,7 @@ class _DetailContentViewState extends State<DetailContentView> {
             radius: 25,
             backgroundImage: Image.asset("assets/images/user.png").image,
           ),
-          SizedBox(width:10),
+          SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
