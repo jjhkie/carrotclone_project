@@ -15,6 +15,8 @@ class DetailContentView extends StatefulWidget {
 
 class _DetailContentViewState extends State<DetailContentView>
     with SingleTickerProviderStateMixin {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   late Size size;
   late List<Map<String, dynamic>> imgList;
   late int _current;
@@ -22,10 +24,12 @@ class _DetailContentViewState extends State<DetailContentView>
   ScrollController _controller = ScrollController();
   late AnimationController _animationController;
   late Animation _colorTween;
+  late bool isMyFavoriteContent;
 
   @override
   void initState() {
     super.initState();
+    isMyFavoriteContent = false;
     _animationController = AnimationController(vsync: this);
     _colorTween = ColorTween(begin: Colors.white, end: Colors.black)
         .animate(_animationController);
@@ -58,6 +62,7 @@ class _DetailContentViewState extends State<DetailContentView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       extendBodyBehindAppBar: true,
       appBar: _appBarWidget(),
       body: _bodyWidget(),
@@ -190,10 +195,24 @@ class _DetailContentViewState extends State<DetailContentView>
         children: [
           GestureDetector(
               onTap: () {
-                print("관심상품 이벤트 발생");
+                setState(() {
+                  isMyFavoriteContent = !isMyFavoriteContent;
+                });
+                scaffoldKey.currentState?.showSnackBar(SnackBar(
+                  duration: Duration(milliseconds: 1000),
+                  content: Text(isMyFavoriteContent
+                      ? "관심목록에 추가되었습니다."
+                      : "관심목록에서 제거되었습니다."),
+                ));
               },
-              child: SvgPicture.asset("assets/svg/heart_off.svg",
-                  width: 20, height: 20)),
+              child: SvgPicture.asset(
+                isMyFavoriteContent
+                    ? "assets/svg/heart_on.svg"
+                    : "assets/svg/heart_off.svg",
+                width: 20,
+                height: 20,
+                color: Color(0xfff08f4f),
+              )),
           Container(
               margin: const EdgeInsets.only(left: 15, right: 10),
               width: 1,
