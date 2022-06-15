@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carrotclone_project/components/manner_temperature_widget.dart';
+import 'package:carrotclone_project/repository/contents_repository.dart';
 import 'package:carrotclone_project/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,6 +18,7 @@ class _DetailContentViewState extends State<DetailContentView>
     with SingleTickerProviderStateMixin {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  late ContentRepository contentRepository;
   late Size size;
   late List<Map<String, dynamic>> imgList;
   late int _current;
@@ -30,6 +32,7 @@ class _DetailContentViewState extends State<DetailContentView>
   void initState() {
     super.initState();
     isMyFavoriteContent = false;
+    contentRepository = ContentRepository();
     _animationController = AnimationController(vsync: this);
     _colorTween = ColorTween(begin: Colors.white, end: Colors.black)
         .animate(_animationController);
@@ -43,6 +46,11 @@ class _DetailContentViewState extends State<DetailContentView>
         _animationController.value = scrollpositionToAlpha / 255;
       });
     });
+    _loadMyFavoriteContentState();
+  }
+
+  _loadMyFavoriteContentState() async {
+    contentRepository.isMyFavoritecontent(widget.data["cid"]);
   }
 
   @override
@@ -195,6 +203,7 @@ class _DetailContentViewState extends State<DetailContentView>
         children: [
           GestureDetector(
               onTap: () {
+                contentRepository.addMyFavoriteContent(widget.data);
                 setState(() {
                   isMyFavoriteContent = !isMyFavoriteContent;
                 });
